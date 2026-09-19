@@ -1,20 +1,133 @@
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;700;900&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* ------------------------------------------------------------------
+   Tokens de runtime. Os valores em RGB "solto" permitem <alpha-value>
+   no Tailwind (ex.: bg-background/80).
+------------------------------------------------------------------- */
 @layer base {
+  :root {
+    --bg: 8 8 10;
+    --fg: 244 244 245;
+    --blood: 255 0 0;
+
+    --header-height: 4.5rem;
+    --announcement-height: 2rem;
+
+    color-scheme: dark;
+  }
+
+  * {
+    @apply border-line;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  html:has(dialog[open]),
+  html.scroll-locked {
+    overflow: hidden;
+  }
+
   body {
-    @apply bg-background text-foreground font-sans m-0 p-0 overflow-x-hidden;
+    @apply bg-background text-foreground font-sans antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: clip;
+  }
+
+  ::selection {
+    background: rgb(var(--blood) / 0.8);
+    color: white;
+  }
+
+  :focus-visible {
+    outline: 2px solid rgb(var(--blood));
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  /* Scrollbar discreta, no tom do asfalto */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #08080a;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #2a2a32;
+    border-radius: 999px;
+    border: 2px solid #08080a;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #3a3a44;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer components {
+  /* Headline em Bebas com o brilho da marca */
+  /* Brilho reservado a um único destaque por tela; por padrão nada usa. */
+  .text-glow {
+    text-shadow: 0 0 18px rgb(var(--blood) / 0.35);
+  }
+
+  /* Texto vazado usado como tipografia de fundo */
+  .text-outline {
+    -webkit-text-stroke: 1px rgb(255 255 255 / 0.12);
+    color: transparent;
+  }
+
+  /* Camada de ruído para dar textura ao asfalto */
+  .noise::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.06;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    mix-blend-mode: overlay;
+  }
+
+  /* Superfície padrão de cards */
+  .surface {
+    @apply bg-asphalt-800 border border-line rounded-lg shadow-card;
+  }
+
+  .hide-scrollbar {
+    scrollbar-width: none;
+  }
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
   }
 }
 
 @layer utilities {
-  .text-shadow-neon {
-    text-shadow: 0 0 10px rgba(255, 0, 0, 0.8), 0 0 20px rgba(255, 0, 0, 0.6);
+  .mask-fade-x {
+    mask-image: linear-gradient(90deg, transparent, black 8%, black 92%, transparent);
   }
-  .box-shadow-neon {
-    box-shadow: 0 0 10px rgba(255, 0, 0, 0.8), 0 0 20px rgba(255, 0, 0, 0.6);
+  .mask-fade-b {
+    mask-image: linear-gradient(180deg, black 60%, transparent);
+  }
+  .pt-safe {
+    padding-top: env(safe-area-inset-top);
+  }
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
   }
 }
