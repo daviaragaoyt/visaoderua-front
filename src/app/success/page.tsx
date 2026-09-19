@@ -1,7 +1,7 @@
 "use client";
 
 import React, { Suspense } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { CheckCircle2, Truck, Home } from "lucide-react";
 import Link from "next/link";
 

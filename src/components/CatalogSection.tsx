@@ -14,7 +14,7 @@ interface Product {
 export default function CatalogSection() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedProduct, setSelectedProduct] = useState<any>(null);
+  const [selectedProduct, setSelectedProduct] = useState<{id: string, name: string, price: string, imageSrc: string} | null>(null);
   const { addToCart } = useCart();
 
   useEffect(() => {

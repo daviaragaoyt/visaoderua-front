@@ -3,11 +3,11 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/context/CartContext";
-import { ShoppingBag, AlertTriangle, CheckCircle2, Copy, CreditCard as CreditCardIcon, QrCode } from "lucide-react";
+import { ShoppingBag, AlertTriangle, Copy, CreditCard as CreditCardIcon, QrCode } from "lucide-react";
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const { items, total, clearCart } = useCart();
+  const { cartItems: items, totalPrice: total, clearCart } = useCart();
   const [step, setStep] = useState<"address" | "payment" | "pix_waiting">("address");
   
   // Address Form State
@@ -167,10 +167,10 @@ export default function CheckoutPage() {
     }
   };
 
-  const handleSuccess = () => {
+  const handleSuccess = React.useCallback(() => {
     clearCart();
     router.push("/success?order=" + Math.floor(Math.random() * 1000000));
-  };
+  }, [clearCart, router]);
 
   const formatTime = (seconds: number) => {
     const m = Math.floor(seconds / 60).toString().padStart(2, "0");
@@ -377,7 +377,7 @@ export default function CheckoutPage() {
                     <span className="text-gray-400">{item.quantity}x</span>
                     <span className="truncate max-w-[120px]">{item.name}</span>
                   </div>
-                  <span>{new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(item.price * item.quantity)}</span>
+                  <span>{new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(parseFloat(item.price.replace(/[^\d,-]/g, '').replace(',', '.')) * item.quantity)}</span>
                 </div>
               ))}
             </div>

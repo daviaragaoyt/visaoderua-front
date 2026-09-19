@@ -6,7 +6,7 @@ import { Search, ShoppingBag } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 
 export default function Navbar() {
-  const { itemCount, setIsCartOpen } = useCart();
+  const { totalItems: itemCount, setIsCartOpen } = useCart();
 
   return (
     <nav className="bg-background border-b border-graphite sticky top-0 z-40">

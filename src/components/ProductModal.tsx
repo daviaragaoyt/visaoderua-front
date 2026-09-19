@@ -8,7 +8,7 @@ interface ProductModalProps {
   isOpen: boolean;
   onClose: () => void;
   product: {
-    id: number;
+    id: string;
     name: string;
     price: string;
     imageSrc: string;
