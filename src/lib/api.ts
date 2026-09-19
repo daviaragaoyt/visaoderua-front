@@ -26,17 +26,24 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 const isAbort = (error: unknown) => error instanceof DOMException && error.name === "AbortError";
 
 /**
- * Busca o catálogo. Em desenvolvimento, se a API não responder, cai no mock
- * para que a UI possa ser trabalhada sem backend. Em produção o erro sobe.
+ * Catálogo de demonstração: ligado sempre em desenvolvimento e, em produção,
+ * apenas com NEXT_PUBLIC_USE_MOCK_CATALOG=true (enquanto o backend não existe).
+ */
+const USE_MOCK_CATALOG = process.env.NEXT_PUBLIC_USE_MOCK_CATALOG === "true";
+
+/**
+ * Busca o catálogo. Se a API não responder e o mock estiver habilitado
+ * (dev ou flag em produção), cai no catálogo de demonstração; senão o erro sobe.
  */
 export async function fetchProducts(signal?: AbortSignal): Promise<Product[]> {
+  if (USE_MOCK_CATALOG && !process.env.NEXT_PUBLIC_API_URL) return mockProducts;
   try {
     const data = await request<ApiProduct[] | { products: ApiProduct[] }>("/api/products", { signal });
     const list = Array.isArray(data) ? data : (data.products ?? []);
     return list.map(normalizeProduct);
   } catch (error) {
-    if (process.env.NODE_ENV === "development" && !isAbort(error)) {
-      console.warn("[catalog] API indisponível, usando mock de desenvolvimento.");
+    if ((process.env.NODE_ENV === "development" || USE_MOCK_CATALOG) && !isAbort(error)) {
+      console.warn("[catalog] API indisponível, usando catálogo de demonstração.");
       return mockProducts;
     }
     throw error;

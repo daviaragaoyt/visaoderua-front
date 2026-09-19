@@ -18,6 +18,7 @@ Variáveis de ambiente (opcionais):
 | `NEXT_PUBLIC_API_URL` | URL do backend (`/api/products`, `/api/orders/*`) | `http://localhost:3333` |
 | `NEXT_PUBLIC_WHATSAPP_NUMBER` | Número do WhatsApp da loja (com DDI) | `5561999999999` |
 | `NEXT_PUBLIC_SITE_URL` | URL pública (metadados / Open Graph) | `https://visaoderua.vercel.app` |
+| `NEXT_PUBLIC_USE_MOCK_CATALOG` | `true` liga o catálogo de demonstração em produção enquanto não há backend | desligado |
 
 Em desenvolvimento, se a API não responder, o catálogo usa um mock (`src/data/mock-products.ts`) para permitir trabalhar a UI. Em produção o erro é exibido com opção de tentar de novo.
 
