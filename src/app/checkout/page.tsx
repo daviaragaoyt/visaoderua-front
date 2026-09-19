@@ -342,7 +342,6 @@ export default function CheckoutPage() {
                      <QrCode className="w-12 h-12 text-gray-400" />
                   </div>
                 )}
-                </div>
               </div>
 
               <div className="bg-background border border-gray-700 p-4 rounded flex items-center justify-between mb-8 max-w-md mx-auto">
