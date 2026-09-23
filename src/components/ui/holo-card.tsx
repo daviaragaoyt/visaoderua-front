@@ -13,8 +13,6 @@ interface HoloCardProps {
   behindGlowSize?: string;
   className?: string;
   enableTilt?: boolean;
-  enableMobileTilt?: boolean;
-  mobileTiltSensitivity?: number;
 }
 
 const ANIMATION_CONFIG = {
@@ -40,8 +38,6 @@ export const HoloCard: React.FC<HoloCardProps> = ({
   behindGlowSize,
   className = '',
   enableTilt = true,
-  enableMobileTilt = false,
-  mobileTiltSensitivity = 5,
 }) => {
   const wrapRef = useRef<HTMLDivElement>(null);
   const shellRef = useRef<HTMLDivElement>(null);
