@@ -6,23 +6,28 @@ interface RevealProps extends HTMLAttributes<HTMLDivElement> {
   children?: ReactNode;
   delay?: number;
   duration?: number;
-  direction?: any;
+  direction?: unknown;
   distance?: number;
   once?: boolean;
-  amount?: any;
+  amount?: unknown;
 }
 
 export function Reveal({
   children,
   className,
-  delay: _delay,
-  duration: _duration,
-  direction: _direction,
-  distance: _distance,
-  once: _once,
-  amount: _amount,
   ...props
 }: RevealProps) {
-  // Retorna diretamente uma div sem animação pra evitar o bug de tela preta
-  return <div className={className} {...props}>{children}</div>;
+  const safeProps = { ...props };
+  delete safeProps.delay;
+  delete safeProps.duration;
+  delete safeProps.direction;
+  delete safeProps.distance;
+  delete safeProps.once;
+  delete safeProps.amount;
+
+  return (
+    <div className={className} {...safeProps}>
+      {children}
+    </div>
+  );
 }
