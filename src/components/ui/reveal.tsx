@@ -1,52 +1,28 @@
 "use client";
 
-import type { ReactNode } from "react";
-import { motion, useReducedMotion, type HTMLMotionProps } from "framer-motion";
-import { ease, duration as durations } from "@/lib/motion";
+import type { ReactNode, HTMLAttributes } from "react";
 
-type Direction = "up" | "down" | "left" | "right" | "none";
-
-interface RevealProps extends Omit<HTMLMotionProps<"div">, "children"> {
+interface RevealProps extends HTMLAttributes<HTMLDivElement> {
   children?: ReactNode;
   delay?: number;
   duration?: number;
-  direction?: Direction;
+  direction?: any;
   distance?: number;
+  once?: boolean;
+  amount?: any;
 }
 
-const offset = (direction: Direction, distance: number) => {
-  switch (direction) {
-    case "up": return { y: distance };
-    case "down": return { y: -distance };
-    case "left": return { x: distance };
-    case "right": return { x: -distance };
-    default: return {};
-  }
-};
-
 export function Reveal({
-  delay = 0,
-  duration = durations.reveal,
-  direction = "up",
-  distance = 24,
   children,
+  className,
+  delay: _delay,
+  duration: _duration,
+  direction: _direction,
+  distance: _distance,
+  once: _once,
+  amount: _amount,
   ...props
 }: RevealProps) {
-  const reduce = useReducedMotion();
-
-  if (reduce) return <div className={props.className}>{children}</div>;
-
-  const initial = { opacity: 0, ...offset(direction, distance) };
-  const animate = { opacity: 1, x: 0, y: 0 };
-
-  return (
-    <motion.div
-      initial={initial}
-      animate={animate}
-      transition={{ duration, delay, ease: ease.out }}
-      {...props}
-    >
-      {children}
-    </motion.div>
-  );
+  // Retorna diretamente uma div sem animação pra evitar o bug de tela preta
+  return <div className={className} {...props}>{children}</div>;
 }
