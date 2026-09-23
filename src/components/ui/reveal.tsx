@@ -13,7 +13,7 @@ interface RevealProps extends Omit<HTMLMotionProps<"div">, "children"> {
   direction?: Direction;
   distance?: number;
   once?: boolean;
-  amount?: number;
+  amount?: number | "some" | "all";
 }
 
 const offset = (direction: Direction, distance: number) => {
@@ -38,7 +38,7 @@ export function Reveal({
   direction = "up",
   distance = 24,
   once = true,
-  amount = 0.2,
+  amount = "some",
   children,
   ...props
 }: RevealProps) {
