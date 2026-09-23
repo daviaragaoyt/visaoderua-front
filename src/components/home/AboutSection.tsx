@@ -8,6 +8,7 @@ import { whatsappLink } from "@/lib/site";
 import { Container } from "@/components/ui/container";
 import { ButtonLink } from "@/components/ui/button";
 import { Reveal } from "@/components/ui/reveal";
+import { HoloCard } from "@/components/ui/holo-card";
 
 export function AboutSection() {
   return (
@@ -40,7 +41,7 @@ export function AboutSection() {
           </Reveal>
 
           <Reveal delay={0.3} className="mt-10">
-            <ButtonLink href={whatsappLink("Salve! Quero conhecer o movimento Visão de Rua.")} variant="outline" size="lg" rightIcon={<ArrowUpRight className="h-5 w-5" />}>
+            <ButtonLink href="https://www.instagram.com/visaoderua061/" target="_blank" variant="outline" size="lg" rightIcon={<ArrowUpRight className="h-5 w-5" />}>
               Conheça o movimento
             </ButtonLink>
           </Reveal>
@@ -54,49 +55,25 @@ export function AboutSection() {
   );
 }
 
-/** Card com a lupa da marca que inclina seguindo o mouse. */
+/** Card com a lupa da marca que inclina e brilha igual carta Pokémon. */
 function TiltCard() {
-  const ref = useRef<HTMLDivElement>(null);
-  const reduce = useReducedMotion();
-  const mx = useMotionValue(0);
-  const my = useMotionValue(0);
-  const rotateX = useSpring(useTransform(my, [-0.5, 0.5], [10, -10]), { stiffness: 200, damping: 24 });
-  const rotateY = useSpring(useTransform(mx, [-0.5, 0.5], [-10, 10]), { stiffness: 200, damping: 24 });
-  const glowX = useTransform(mx, [-0.5, 0.5], ["20%", "80%"]);
-  const glowY = useTransform(my, [-0.5, 0.5], ["20%", "80%"]);
-
-  const onMove = (e: MouseEvent<HTMLDivElement>) => {
-    if (reduce || !ref.current) return;
-    const rect = ref.current.getBoundingClientRect();
-    mx.set((e.clientX - rect.left) / rect.width - 0.5);
-    my.set((e.clientY - rect.top) / rect.height - 0.5);
-  };
-  const onLeave = () => {
-    mx.set(0);
-    my.set(0);
-  };
-
   return (
-    <div className="relative mx-auto w-full max-w-md [perspective:1200px]">
-      <div className="absolute inset-0 rotate-3 scale-105 rounded-2xl border border-line" aria-hidden />
-      <motion.div
-        ref={ref}
-        onMouseMove={onMove}
-        onMouseLeave={onLeave}
-        style={reduce ? undefined : { rotateX, rotateY, transformStyle: "preserve-3d" }}
-        className="relative aspect-[4/5] overflow-hidden rounded-2xl border border-line bg-gradient-to-br from-asphalt-600 to-asphalt-900 shadow-modal"
-      >
-        <motion.div style={{ left: glowX, top: glowY }} className="pointer-events-none absolute h-80 w-80 -translate-x-1/2 -translate-y-1/2 rounded-full bg-radial-white" aria-hidden />
-        <div className="absolute inset-0 flex flex-col items-center justify-center p-8 [transform:translateZ(40px)]">
-          <div className="relative w-full max-w-xs">
-            <Image src="/images/logo-main.png" alt="Logo Visão de Rua" width={1280} height={853} sizes="(max-width: 768px) 80vw, 400px" className="h-auto w-full drop-shadow-[0_30px_50px_rgba(0,0,0,0.9)]" />
-          </div>
+    <HoloCard
+      className="w-full max-w-sm mx-auto"
+      behindGlowEnabled
+      behindGlowColor="rgba(255, 0, 0, 0.4)"
+      iconUrl="/images/logo-main.png"
+    >
+      <div className="absolute inset-0 bg-gradient-to-t from-asphalt-950 via-asphalt-900/40 to-transparent pointer-events-none" />
+      <div className="absolute inset-0 flex flex-col items-center justify-center p-8">
+        <div className="relative w-full max-w-xs">
+          <Image src="/images/logo-main.png" alt="Logo Visão de Rua" width={1280} height={853} sizes="(max-width: 768px) 80vw, 400px" className="h-auto w-full drop-shadow-[0_30px_50px_rgba(0,0,0,0.9)]" />
         </div>
-        <div className="absolute inset-x-0 bottom-0 flex items-end justify-between p-6">
-          <span className="font-display text-5xl leading-none text-white/10">VDR</span>
-          <span className="text-[10px] font-bold uppercase tracking-widest2 text-foreground/40">Est. Brasília · DF</span>
-        </div>
-      </motion.div>
-    </div>
+      </div>
+      <div className="absolute inset-x-0 bottom-0 flex items-end justify-between p-6 pointer-events-none">
+        <span className="font-display text-5xl leading-none text-white/10">VDR</span>
+        <span className="text-[10px] font-bold uppercase tracking-widest2 text-foreground/40">Est. Brasília · DF</span>
+      </div>
+    </HoloCard>
   );
 }

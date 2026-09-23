@@ -18,7 +18,6 @@ const AUTOPLAY_MS = 4500;
 export function Feedbacks() {
   const trackRef = useRef<HTMLDivElement>(null);
   const [index, setIndex] = useState(0);
-  const [paused, setPaused] = useState(false);
   const reduce = useReducedMotion();
   const count = feedbacks.length;
 
@@ -59,23 +58,17 @@ export function Feedbacks() {
   }, []);
 
   useEffect(() => {
-    if (paused || reduce) return;
+    if (reduce) return;
     const id = window.setInterval(() => scrollTo((index + 1) % count), AUTOPLAY_MS);
     return () => window.clearInterval(id);
-  }, [index, paused, reduce, count, scrollTo]);
+  }, [index, reduce, count, scrollTo]);
 
   return (
     <section className="relative border-t border-line bg-asphalt-950 py-20 md:py-28">
       <Container>
         <SectionHeading eyebrow="Quem usa, aprova" title="Feedback dos visionários" className="mb-12" />
 
-        <Reveal
-          className="relative"
-          onMouseEnter={() => setPaused(true)}
-          onMouseLeave={() => setPaused(false)}
-          onFocusCapture={() => setPaused(true)}
-          onBlurCapture={() => setPaused(false)}
-        >
+        <Reveal className="relative">
           <div
             ref={trackRef}
             className="hide-scrollbar -mx-4 flex snap-x snap-mandatory gap-5 overflow-x-auto scroll-smooth px-[calc(50vw-9rem)] py-6 sm:px-[calc(50%-9rem)]"
