@@ -1,7 +1,7 @@
 "use client";
 
-import { useRef, type ReactNode } from "react";
-import { motion, useInView, useReducedMotion, type HTMLMotionProps } from "framer-motion";
+import type { ReactNode } from "react";
+import { motion, useReducedMotion, type HTMLMotionProps } from "framer-motion";
 import { ease, duration as durations } from "@/lib/motion";
 
 type Direction = "up" | "down" | "left" | "right" | "none";
@@ -26,7 +26,6 @@ const offset = (direction: Direction, distance: number) => {
   }
 };
 
-/** Anima o conteúdo quando entra na viewport usando useInView para máxima compatibilidade no Next.js. */
 export function Reveal({
   delay = 0,
   duration = durations.reveal,
@@ -38,14 +37,6 @@ export function Reveal({
   ...props
 }: RevealProps) {
   const reduce = useReducedMotion();
-  const ref = useRef<HTMLDivElement>(null);
-  
-  // O margin compensa um pouco antes de entrar na tela pra garantir q dispare.
-  const isInView = useInView(ref, { 
-    once, 
-    amount: amount === "some" ? 0.1 : amount === "all" ? 1 : amount,
-    margin: "0px 0px -50px 0px"
-  });
 
   if (reduce) return <div className={props.className}>{children}</div>;
 
@@ -54,9 +45,8 @@ export function Reveal({
 
   return (
     <motion.div
-      ref={ref}
       initial={initial}
-      animate={isInView ? animate : initial}
+      animate={animate}
       transition={{ duration, delay, ease: ease.out }}
       {...props}
     >
