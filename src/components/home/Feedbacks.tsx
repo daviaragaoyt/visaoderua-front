@@ -58,10 +58,9 @@ export function Feedbacks() {
   }, []);
 
   useEffect(() => {
-    if (reduce) return;
     const id = window.setInterval(() => scrollTo((index + 1) % count), AUTOPLAY_MS);
     return () => window.clearInterval(id);
-  }, [index, reduce, count, scrollTo]);
+  }, [index, count, scrollTo]);
 
   return (
     <section className="relative border-t border-line bg-asphalt-950 py-20 md:py-28">
