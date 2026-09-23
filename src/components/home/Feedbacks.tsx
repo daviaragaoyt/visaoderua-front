@@ -1,66 +1,18 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import Image from "next/image";
-import { useReducedMotion } from "framer-motion";
-import { ChevronLeft, ChevronRight, Quote, Star } from "lucide-react";
+import { Quote, Star } from "lucide-react";
 import type { Feedback } from "@/types";
 import { cn } from "@/lib/utils";
 import { initials } from "@/lib/format";
 import { feedbacks } from "@/data/feedbacks";
 import { Container } from "@/components/ui/container";
 import { SectionHeading } from "@/components/ui/section-heading";
-import { IconButton } from "@/components/ui/icon-button";
 import { Reveal } from "@/components/ui/reveal";
-
-const AUTOPLAY_MS = 4500;
+import { Marquee } from "@/components/ui/marquee";
 
 export function Feedbacks() {
-  const trackRef = useRef<HTMLDivElement>(null);
-  const [index, setIndex] = useState(0);
-  const reduce = useReducedMotion();
-  const count = feedbacks.length;
-
-  const scrollTo = useCallback((i: number) => {
-    const track = trackRef.current;
-    const child = track?.children[i] as HTMLElement | undefined;
-    if (!track || !child) return;
-    track.scrollTo({ left: child.offsetLeft - (track.clientWidth - child.clientWidth) / 2, behavior: "smooth" });
-  }, []);
-
-  // Descobre qual card está mais próximo do centro após o scroll.
-  useEffect(() => {
-    const track = trackRef.current;
-    if (!track) return;
-    let raf = 0;
-    const onScroll = () => {
-      cancelAnimationFrame(raf);
-      raf = requestAnimationFrame(() => {
-        const center = track.scrollLeft + track.clientWidth / 2;
-        let best = 0;
-        let bestDist = Infinity;
-        Array.from(track.children).forEach((el, i) => {
-          const node = el as HTMLElement;
-          const dist = Math.abs(node.offsetLeft + node.clientWidth / 2 - center);
-          if (dist < bestDist) {
-            bestDist = dist;
-            best = i;
-          }
-        });
-        setIndex(best);
-      });
-    };
-    track.addEventListener("scroll", onScroll, { passive: true });
-    return () => {
-      track.removeEventListener("scroll", onScroll);
-      cancelAnimationFrame(raf);
-    };
-  }, []);
-
-  useEffect(() => {
-    const id = window.setInterval(() => scrollTo((index + 1) % count), AUTOPLAY_MS);
-    return () => window.clearInterval(id);
-  }, [index, count, scrollTo]);
 
   return (
     <section className="relative border-t border-line bg-asphalt-950 py-20 md:py-28">
@@ -68,41 +20,16 @@ export function Feedbacks() {
         <SectionHeading eyebrow="Quem usa, aprova" title="Feedback dos visionários" className="mb-12" />
 
         <Reveal className="relative">
-          <div
-            ref={trackRef}
-            className="hide-scrollbar -mx-4 flex snap-x snap-mandatory gap-5 overflow-x-auto scroll-smooth px-[calc(50vw-9rem)] py-6 sm:px-[calc(50%-9rem)]"
-            aria-roledescription="carrossel"
-            aria-label="Depoimentos de clientes"
-          >
-            {feedbacks.map((fb, i) => (
-              <FeedbackCard key={fb.id} feedback={fb} active={i === index} />
-            ))}
-          </div>
+          <Marquee duration={60} pauseOnHover className="py-6">
+            <div className="flex gap-5 pr-5">
+              {feedbacks.map((fb) => (
+                <FeedbackCard key={fb.id} feedback={fb} active={true} />
+              ))}
+            </div>
+          </Marquee>
 
           <div className="pointer-events-none absolute inset-y-0 left-0 hidden w-24 bg-gradient-to-r from-asphalt-950 to-transparent md:block" aria-hidden />
           <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-24 bg-gradient-to-l from-asphalt-950 to-transparent md:block" aria-hidden />
-
-          <div className="mt-4 flex items-center justify-center gap-6">
-            <IconButton label="Depoimento anterior" variant="surface" onClick={() => scrollTo((index - 1 + count) % count)}>
-              <ChevronLeft className="h-5 w-5" />
-            </IconButton>
-            <div className="flex items-center gap-2" role="tablist" aria-label="Escolher depoimento">
-              {feedbacks.map((fb, i) => (
-                <button
-                  key={fb.id}
-                  type="button"
-                  role="tab"
-                  aria-selected={i === index}
-                  aria-label={`Depoimento ${i + 1}`}
-                  onClick={() => scrollTo(i)}
-                  className={cn("h-1.5 rounded-full transition-all duration-400 ease-out-expo", i === index ? "w-8 bg-blood" : "w-1.5 bg-white/25 hover:bg-white/50")}
-                />
-              ))}
-            </div>
-            <IconButton label="Próximo depoimento" variant="surface" onClick={() => scrollTo((index + 1) % count)}>
-              <ChevronRight className="h-5 w-5" />
-            </IconButton>
-          </div>
         </Reveal>
       </Container>
     </section>
